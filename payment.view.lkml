@@ -5,7 +5,6 @@ view: payment {
     primary_key: yes
     type: number
     sql: ${TABLE}.payment_id ;;
-    hidden: yes
   }
 
   dimension: amount {
@@ -16,8 +15,8 @@ view: payment {
 
   dimension: customer_id {
     type: number
-    # hidden: yes
     sql: ${TABLE}.customer_id ;;
+    hidden: yes
   }
 
   dimension_group: last_update {
@@ -31,7 +30,7 @@ view: payment {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_update ;;
+    sql: DATE_ADD(${TABLE}.last_update, interval 11 year) ;;
   }
 
   dimension_group: payment {
@@ -45,22 +44,25 @@ view: payment {
       quarter,
       year
     ]
-    sql: ${TABLE}.payment_date ;;
+    sql: DATE_ADD(${TABLE}.payment_date, interval 11 year) ;;
   }
 
   dimension: rental_id {
     type: number
     sql: ${TABLE}.rental_id ;;
+    hidden: yes
   }
 
   dimension: staff_id {
-    type: yesno
+    type: number
     sql: ${TABLE}.staff_id ;;
+    hidden: yes
   }
 
   measure: total_sales {
     type: sum
     sql: ${amount} ;;
+    value_format_name: usd
   }
 
   measure: count {

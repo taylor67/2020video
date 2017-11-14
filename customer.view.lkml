@@ -9,12 +9,13 @@ view: customer {
 
   dimension: active {
     type: yesno
-    sql: ${TABLE}.active ;;
+    sql: ${TABLE}.active=1 ;;
   }
 
   dimension: address_id {
     type: number
     sql: ${TABLE}.address_id ;;
+    hidden: yes
   }
 
   dimension_group: create {
@@ -36,14 +37,9 @@ view: customer {
     sql: ${TABLE}.email ;;
   }
 
-  dimension: first_name {
+  dimension: name {
     type: string
-    sql: ${TABLE}.first_name ;;
-  }
-
-  dimension: last_name {
-    type: string
-    sql: ${TABLE}.last_name ;;
+    sql: CONCAT(${first_name}, ' ',${last_name}) ;;
   }
 
   dimension_group: last_update {
@@ -68,5 +64,17 @@ view: customer {
   measure: count {
     type: count
     drill_fields: [customer_id, last_name, first_name, payment.count]
+  }
+
+  dimension: first_name {
+    type: string
+    sql: CONCAT(UCASE(LEFT(${TABLE}.first_name, 1)), LCASE(SUBSTRING(${TABLE}.first_name, 2))) ;;
+    hidden: yes
+  }
+
+  dimension: last_name {
+    type: string
+    sql: CONCAT(UCASE(LEFT(${TABLE}.last_name, 1)), LCASE(SUBSTRING(${TABLE}.last_name, 2))) ;;
+    hidden: yes
   }
 }

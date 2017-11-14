@@ -104,6 +104,6 @@ view: rental {
 
   measure: count {
     type: count
-    drill_fields: [rental_id]
+    drill_fields: [rental_id, rental_date, return_date, rental_duration, late_or_outstanding]
   }
 }
