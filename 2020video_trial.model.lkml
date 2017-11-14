@@ -4,7 +4,12 @@ include: "*.view.lkml"         # include all views in this project
 include: "*.dashboard.lookml"  # include all dashboards in this project
 
   explore: rental {
-#     sql_always_where: ${rental_raw}>'2015-01-01' and ${rental_raw} <'2006-12-30' ;;
+    always_filter: {
+      filters: {
+        field: rental_year
+        value: "2015"
+      }
+    }
   join: customer {
     relationship: many_to_one
     type: left_outer

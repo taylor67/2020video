@@ -1,7 +1,6 @@
 view: rental {
   sql_table_name: sakila.rental ;;
 
-
   dimension: rental_id {
     primary_key: yes
     type: number
@@ -11,11 +10,19 @@ view: rental {
   dimension: customer_id {
     type: number
     sql: ${TABLE}.customer_id ;;
+    hidden: yes
   }
 
   dimension: inventory_id {
     type: number
     sql: ${TABLE}.inventory_id ;;
+    hidden: yes
+  }
+
+  dimension: staff_id {
+    type: yesno
+    sql: ${TABLE}.staff_id ;;
+    hidden: yes
   }
 
   dimension_group: last_update {
@@ -29,7 +36,7 @@ view: rental {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_update ;;
+    sql: DATE_ADD(${TABLE}.last_update, interval 11 year) ;;
   }
 
   dimension_group: rental {
@@ -39,11 +46,13 @@ view: rental {
       time,
       date,
       week,
+      month_name,
+      month_num,
       month,
       quarter,
       year
     ]
-    sql: ${TABLE}.rental_date ;;
+    sql: DATE_ADD(${TABLE}.rental_date, interval 11 year)  ;;
   }
 
   dimension_group: return {
@@ -57,13 +66,40 @@ view: rental {
       quarter,
       year
     ]
-    sql: ${TABLE}.return_date ;;
+    sql: DATE_ADD(${TABLE}.return_date, interval 11 year) ;;
+  }
+##### Late or Outstanding Returns #####
+  dimension: is_returned {
+    type: yesno
+    sql: ${return_raw} is not null ;;
   }
 
-  dimension: staff_id {
+  dimension: rental_duration {
+    description: "Number of days, if returned, between rental date and returned date. If outstanding, between rental date and current date."
+    type: number
+    sql: CASE
+            WHEN ${return_date} IS NOT NULL THEN DATEDIFF(${return_raw}, ${rental_raw})
+            ELSE DATEDIFF(CURDATE(), ${rental_raw})
+          END;;
+  }
+
+  dimension: late_or_outstanding {
     type: yesno
-    sql: ${TABLE}.staff_id ;;
-    hidden: yes
+    sql: ${rental_duration}>=3 ;;
+  }
+
+  measure: late_or_outstanding_count{
+    type: count
+    filters: {
+      field: late_or_outstanding
+      value: "Yes"
+    }
+  }
+
+  measure: late_or_outstanding_percentage {
+    type: number
+    sql: ${late_or_outstanding_count}/${count} ;;
+    value_format_name: percent_2
   }
 
   measure: count {
