@@ -3,7 +3,7 @@ view: store {
 
   dimension: store_id {
     primary_key: yes
-    type: yesno
+    type: number
     sql: ${TABLE}.store_id ;;
   }
 
@@ -28,7 +28,7 @@ view: store {
   }
 
   dimension: manager_staff_id {
-    type: yesno
+    type: number
     sql: ${TABLE}.manager_staff_id ;;
   }
 

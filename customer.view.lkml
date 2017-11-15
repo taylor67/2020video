@@ -56,11 +56,6 @@ view: customer {
     sql: ${TABLE}.last_update ;;
   }
 
-  dimension: store_id {
-    type: yesno
-    sql: ${TABLE}.store_id ;;
-  }
-
   measure: count {
     type: count
     drill_fields: [customer_id, last_name, first_name, payment.count]
@@ -77,4 +72,10 @@ view: customer {
     sql: CONCAT(UCASE(LEFT(${TABLE}.last_name, 1)), LCASE(SUBSTRING(${TABLE}.last_name, 2))) ;;
     hidden: yes
   }
+
+dimension: store_id {
+  type: yesno
+  sql: ${TABLE}.store_id ;;
+  hidden: yes
+}
 }

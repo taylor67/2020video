@@ -102,6 +102,11 @@ view: rental {
     value_format_name: percent_2
   }
 
+  dimension: outstanding_but_not_late {
+    type: yesno
+    sql:  ${return_raw} IS NULL AND DATEDIFF(${rental_date}, CURDATE()) < 3 ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [rental_id, rental_date, return_date, rental_duration, late_or_outstanding]
