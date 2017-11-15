@@ -10,6 +10,7 @@ view: store {
   dimension: address_id {
     type: number
     sql: ${TABLE}.address_id ;;
+    hidden: yes
   }
 
   dimension_group: last_update {
