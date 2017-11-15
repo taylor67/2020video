@@ -112,7 +112,7 @@ view: rental {
           END;;
   }
 
-  #   dimension: outstanding_not_late {
+#     dimension: outstanding_not_late {
 #     type: yesno
 #     sql:  ${return_raw} IS NULL AND ${rental_duration} < 3 ;;
 #   }

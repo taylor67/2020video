@@ -4,12 +4,6 @@ include: "*.view.lkml"         # include all views in this project
 include: "*.dashboard.lookml"  # include all dashboards in this project
 
 explore: rental {
-#     always_filter: {
-#       filters: {
-#         field: rental_year
-#         value: "2016"
-#       }
-
 join: customer {
   type: left_outer
   relationship: many_to_one
