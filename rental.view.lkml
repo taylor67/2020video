@@ -84,8 +84,9 @@ view: rental {
   }
 
   dimension: late_or_outstanding {
+    description: "Rental duration over 3 days, regardless of if this is paid or outstanding."
     type: yesno
-    sql: ${rental_duration}>=3 ;;
+    sql: ${rental_duration}>3 ;;
   }
 
   measure: late_or_outstanding_count{
@@ -102,10 +103,19 @@ view: rental {
     value_format_name: percent_2
   }
 
-  dimension: outstanding_but_not_late {
-    type: yesno
-    sql:  ${return_raw} IS NULL AND DATEDIFF(${rental_date}, CURDATE()) < 3 ;;
+  dimension: return_status {
+    type: string
+    sql: CASE WHEN ${return_date} IS NOT NULL AND ${rental_duration}<=3 THEN 'Returned On Time'
+              WHEN ${return_date} IS NOT NULL THEN 'Returned Late'
+              WHEN ${return_date} IS NULL AND ${rental_duration}<=3 THEN 'Outstanding - On Time'
+              WHEN ${return_date} IS NULL THEN 'Outstanding - Late'
+          END;;
   }
+
+  #   dimension: outstanding_not_late {
+#     type: yesno
+#     sql:  ${return_raw} IS NULL AND ${rental_duration} < 3 ;;
+#   }
 
   measure: count {
     type: count
