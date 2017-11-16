@@ -4,6 +4,7 @@ include: "*.view.lkml"         # include all views in this project
 include: "*.dashboard.lookml"  # include all dashboards in this project
 
 explore: rental {
+  label: "Rentals, Payments, and Customers"
 join: customer {
   type: left_outer
   relationship: many_to_one
@@ -22,7 +23,36 @@ join: store {
   sql_on: ${customer.store_id}=${store.store_id} ;;
 }
 
+join: inventory {
+  type: left_outer
+  relationship: many_to_one
+  sql_on: ${rental.inventory_id}=${inventory.inventory_id} ;;
+  fields: []
 }
+
+join: genre_map {
+  type: left_outer
+  relationship: one_to_one
+  sql_on: ${inventory.film_id}=${genre_map.film_id} ;;
+  fields: []
+}
+
+join: genre {
+  type: left_outer
+  relationship: one_to_one
+  sql_on: ${genre_map.film_id}=${genre_map.film_id} ;;
+}
+
+}
+
+explore: inventory {
+  join: rental {
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${inventory.inventory_id}=${rental.inventory_id};;
+  }
+}
+
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.

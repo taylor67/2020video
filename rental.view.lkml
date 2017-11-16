@@ -117,6 +117,12 @@ view: rental {
 #     sql:  ${return_raw} IS NULL AND ${rental_duration} < 3 ;;
 #   }
 
+  measure: average_rental_duration {
+    type: average
+    sql: ${rental_duration} ;;
+    value_format: "#.##"
+  }
+
   measure: count {
     type: count
     drill_fields: [rental_id, rental_date, return_date, rental_duration, late_or_outstanding]
