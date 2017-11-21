@@ -71,6 +71,12 @@ explore: inventory {
     relationship: one_to_many
     sql_on: ${inventory.inventory_id}=${rental.inventory_id};;
   }
+
+  join: film {
+    type: inner
+    relationship: many_to_one
+    sql_on: ${film.film_id}=${inventory.film_id} ;;
+  }
 }
 
 

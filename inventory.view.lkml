@@ -10,6 +10,7 @@ view: inventory {
   dimension: film_id {
     type: number
     sql: ${TABLE}.film_id ;;
+    hidden: yes
   }
 
   dimension_group: last_update {
@@ -27,12 +28,8 @@ view: inventory {
   }
 
   dimension: store_id {
-    type: yesno
+    type: number
     sql: ${TABLE}.store_id ;;
-  }
-
-  measure: total_ {
-
   }
 
   measure: count {

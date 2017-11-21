@@ -5,7 +5,7 @@ view: film {
     primary_key: yes
     type: number
     sql: ${TABLE}.film_id ;;
-    hidden: yes
+
   }
 
   dimension: description {
