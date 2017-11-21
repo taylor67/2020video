@@ -3,6 +3,7 @@ view: repeat_rental_facts {
     sql: SELECT
         rental.rental_id
         , COUNT(DISTINCT repeat_rental_items.rental_id) AS number_subsequent_rentals
+        , rental.rental_date
         , MIN(repeat_rental_items.rental_date) AS next_rental_date
         , MIN(repeat_rental_items.rental_id) AS next_rental_id
       FROM sakila.rental rental
@@ -18,6 +19,7 @@ view: repeat_rental_facts {
   dimension: rental_id {
     type: number
     sql: ${TABLE}.rental_id ;;
+    primary_key: yes
     hidden: yes
   }
 
@@ -31,15 +33,54 @@ view: repeat_rental_facts {
     sql: ${number_subsequent_rentals}>0 ;;
   }
 
+  dimension_group: rental_date {
+    type: time
+    timeframes: [raw, date]
+    sql: DATE_ADD(${TABLE}.rental_date, interval 11 year) ;;
+  }
+
   dimension_group: next_rental {
     type: time
     timeframes: [raw, date]
     sql: DATE_ADD(${TABLE}.next_rental_date, interval 11 year) ;;
   }
 
+  dimension: days_until_next_rental {
+    type: number
+    sql: CASE
+          WHEN ${has_subsequent_rental} THEN timestampdiff(DAY, ${rental_date_date}, ${next_rental_date})
+          ELSE null END;;
+  }
+
   dimension: next_rental_id {
     type: number
     sql: ${TABLE}.next_rental_id ;;
+  }
+
+  measure: average_days_until_next_rental {
+    type: average
+    sql: ${days_until_next_rental} ;;
+    value_format: "#.##"
+  }
+
+  measure: has_subsequent_rental_count {
+    type: count
+    filters: {
+      field: has_subsequent_rental
+      value: "Yes"
+    }
+    hidden: yes
+  }
+
+  measure: count {
+    type: count
+    hidden: yes
+  }
+
+  measure: has_subsequent_rental_percentage {
+    type: number
+    sql: 1.0*${has_subsequent_rental_count}/${count} ;;
+    value_format_name: percent_2
   }
 
   set: detail {

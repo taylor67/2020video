@@ -1,10 +1,10 @@
 view: customer_facts {
   derived_table: {
     sql: SELECT
-        customer.customer_id  AS `customer.customer_id`,
+        customer.customer_id  AS customer_id,
         MIN(DATE(DATE_ADD(rental.rental_date, interval 11 year)  )) AS first_rental,
         MAX(DATE(DATE_ADD(rental.rental_date, interval 11 year)  )) AS last_rental,
-        COALESCE(SUM(payment.amount ), 0) AS `payment.total_sales`
+        COALESCE(SUM(payment.amount ), 0) AS lifetime_spending
       FROM sakila.rental  AS rental
       LEFT JOIN sakila.customer  AS customer ON rental.customer_id=customer.customer_id
       LEFT JOIN sakila.payment  AS payment ON rental.rental_id=payment.rental_id
@@ -13,16 +13,14 @@ view: customer_facts {
       ORDER BY COALESCE(SUM(payment.amount ), 0) DESC
       LIMIT 500
        ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
+    persist_for: "24 hours"
+    indexes: ["customer_id"]
   }
 
   dimension: customer_id {
     type: string
-    sql: ${TABLE}.`customer.customer_id` ;;
+    sql: ${TABLE}.customer_id ;;
+    primary_key: yes
     hidden:yes
   }
 
@@ -37,8 +35,15 @@ view: customer_facts {
   }
 
   dimension: lifetime_spending {
+    description: "Total amount customer has spent."
     type: number
-    sql: ${TABLE}.`payment.total_sales` ;;
+    sql: ${TABLE}.lifetime_spending;;
+    value_format_name: usd
+  }
+
+  measure: average_lifetime_spending {
+    type: average
+    sql: ${lifetime_spending} ;;
     value_format_name: usd
   }
 

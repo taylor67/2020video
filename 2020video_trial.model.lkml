@@ -18,6 +18,12 @@ join: customer {
   sql_on: ${rental.customer_id}=${customer.customer_id} ;;
 }
 
+join: customer_facts {
+  type: inner
+  relationship: one_to_one
+  sql_on: ${customer_facts.customer_id}=${customer.customer_id} ;;
+}
+
 join: payment {
   type: left_outer
   relationship: one_to_one
@@ -52,12 +58,11 @@ join: genre_map {
 }
 
 join: genre {
-  view_label: "Rental"
+  view_label: "Film"
   type: left_outer
   relationship: one_to_one
   sql_on: ${genre_map.category_id}=${genre.category_id} ;;
 }
-
 }
 
 explore: inventory {
