@@ -78,7 +78,7 @@ view: rental {
     description: "Number of days, if returned, between rental date and returned date. If outstanding, between rental date and current date."
     type: number
     sql: CASE
-            WHEN ${return_date} IS NOT NULL THEN DATEDIFF(${return_raw}, ${rental_raw})
+            WHEN ${is_returned} THEN DATEDIFF(${return_raw}, ${rental_raw})
             ELSE DATEDIFF(CURDATE(), ${rental_raw})
           END;;
   }

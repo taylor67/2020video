@@ -4,7 +4,14 @@ include: "*.view.lkml"         # include all views in this project
 include: "*.dashboard.lookml"  # include all dashboards in this project
 
 explore: rental {
-  label: "Rentals, Payments, and Customers"
+label: "Rentals, Payments, and Customers"
+
+join: repeat_rental_facts {
+  type: left_outer
+  relationship: one_to_one
+  sql_on: ${rental.rental_id}=${repeat_rental_facts.rental_id} ;;
+}
+
 join: customer {
   type: left_outer
   relationship: many_to_one
@@ -17,12 +24,6 @@ join: payment {
   sql_on: ${rental.rental_id}=${payment.rental_id} ;;
 }
 
-join: store {
-  type: left_outer
-  relationship: many_to_one
-  sql_on: ${customer.store_id}=${store.store_id} ;;
-}
-
 join: inventory {
   type: left_outer
   relationship: many_to_one
@@ -30,17 +31,31 @@ join: inventory {
   fields: []
 }
 
+# join: store {
+#   type: left_outer
+#   relationship: many_to_one
+#   sql_on: ${inventory.store_id}=${store.store_id} ;;
+#   fields: []
+# }
+
+join: film {
+  type: inner
+  relationship: many_to_one
+  sql_on: ${film.film_id}=${inventory.film_id} ;;
+}
+
 join: genre_map {
   type: left_outer
   relationship: one_to_one
-  sql_on: ${inventory.film_id}=${genre_map.film_id} ;;
+  sql_on: ${film.film_id}=${genre_map.film_id} ;;
   fields: []
 }
 
 join: genre {
+  view_label: "Rental"
   type: left_outer
   relationship: one_to_one
-  sql_on: ${genre_map.film_id}=${genre_map.film_id} ;;
+  sql_on: ${genre_map.category_id}=${genre.category_id} ;;
 }
 
 }

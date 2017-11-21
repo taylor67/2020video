@@ -1,0 +1,48 @@
+view: customer_facts {
+  derived_table: {
+    sql: SELECT
+        customer.customer_id  AS `customer.customer_id`,
+        MIN(DATE(DATE_ADD(rental.rental_date, interval 11 year)  )) AS first_rental,
+        MAX(DATE(DATE_ADD(rental.rental_date, interval 11 year)  )) AS last_rental,
+        COALESCE(SUM(payment.amount ), 0) AS `payment.total_sales`
+      FROM sakila.rental  AS rental
+      LEFT JOIN sakila.customer  AS customer ON rental.customer_id=customer.customer_id
+      LEFT JOIN sakila.payment  AS payment ON rental.rental_id=payment.rental_id
+
+      GROUP BY 1
+      ORDER BY COALESCE(SUM(payment.amount ), 0) DESC
+      LIMIT 500
+       ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
+
+  dimension: customer_id {
+    type: string
+    sql: ${TABLE}.`customer.customer_id` ;;
+    hidden:yes
+  }
+
+  dimension: first_rental {
+    type: date
+    sql: ${TABLE}.first_rental ;;
+  }
+
+  dimension: last_rental {
+    type: date
+    sql: ${TABLE}.last_rental ;;
+  }
+
+  dimension: lifetime_spending {
+    type: number
+    sql: ${TABLE}.`payment.total_sales` ;;
+    value_format_name: usd
+  }
+
+  set: detail {
+    fields: [customer_id, first_rental, last_rental, lifetime_spending]
+  }
+}

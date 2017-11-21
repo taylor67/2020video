@@ -3,8 +3,9 @@ view: genre {
 
   dimension: category_id {
     primary_key: yes
-    type: yesno
+    type: number
     sql: ${TABLE}.category_id ;;
+    hidden: yes
   }
 
   dimension_group: last_update {
@@ -19,15 +20,11 @@ view: genre {
       year
     ]
     sql: ${TABLE}.last_update ;;
+    hidden: yes
   }
 
-  dimension: name {
+  dimension: genre {
     type: string
     sql: ${TABLE}.name ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [category_id, name, film_category.count]
   }
 }
