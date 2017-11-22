@@ -58,7 +58,7 @@ view: customer {
 
   measure: count {
     type: count
-    drill_fields: [customer_id, last_name, first_name, payment.count]
+    drill_fields: [customer_id, name,email, create_date, payment.count]
   }
 
   dimension: first_name {

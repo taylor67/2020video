@@ -13,7 +13,7 @@ view: customer_facts {
       ORDER BY COALESCE(SUM(payment.amount ), 0) DESC
       LIMIT 500
        ;;
-    persist_for: "24 hours"
+    sql_trigger_value: select max(customer_id) ;;
     indexes: ["customer_id"]
   }
 
