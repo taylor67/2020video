@@ -74,6 +74,16 @@ view: rental {
     sql: ${return_raw} is not null ;;
   }
 
+  measure: count_outstanding {
+    description: "Count of rentals that have not been returned yet. Status could be late or on time."
+    type: count
+    filters: {
+      field: is_returned
+      value: "No"
+    }
+    drill_fields: [detail*, return_status, -late_or_outstanding]
+  }
+
   dimension: rental_duration {
     description: "Number of days, if returned, between rental date and returned date. If outstanding, between rental date and current date."
     type: number
@@ -125,6 +135,10 @@ view: rental {
 
   measure: count {
     type: count
-    drill_fields: [rental_id, rental_date, return_date, rental_duration, late_or_outstanding]
+    drill_fields: [detail*]
+  }
+
+  set: detail {
+    fields: [rental_id, rental_date, return_date, rental_duration, late_or_outstanding, film.title]
   }
 }

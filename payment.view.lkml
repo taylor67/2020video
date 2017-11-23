@@ -63,6 +63,7 @@ view: payment {
     type: sum
     sql: ${amount} ;;
     value_format_name: usd
+    drill_fields: [payment_id, amount, rental.rental_date, rental.return_date, rental.is_returned, film.title]
   }
 
   measure: count {

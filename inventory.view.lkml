@@ -32,8 +32,17 @@ view: inventory {
     sql: ${TABLE}.store_id ;;
   }
 
+  measure: percent_of_inventory_in_store  {
+    type: number
+    sql: (1.0*(${count}-${rental.count_outstanding})/${count})*100 ;;
+  }
+
   measure: count {
     type: count
-    drill_fields: [inventory_id]
+    drill_fields: [detail*]
+  }
+
+  set: detail {
+    fields: [inventory_id, store_id, film_id, film.title, film.rental_duration, film.rental_cost, film.replacement_cost]
   }
 }
