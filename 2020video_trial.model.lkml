@@ -7,6 +7,12 @@ explore: rental {
   from: rental
 label: "Rentals, Payments and Customers: Simple"
 
+ join: repeat_rental_facts {
+  view_label: "Rental"
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${rental.rental_id}=${repeat_rental_facts.rental_id} ;;
+  }
 join: customer {
   type: left_outer
   relationship: many_to_one
