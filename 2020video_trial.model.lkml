@@ -13,6 +13,13 @@ join: customer {
   sql_on: ${rental.customer_id}=${customer.customer_id} ;;
 }
 
+  join: customer_facts {
+    view_label: "Customer"
+    type: inner
+    relationship: one_to_one
+    sql_on: ${customer_facts.customer_id}=${customer.customer_id} ;;
+  }
+
 join: payment {
   type: left_outer
   relationship: one_to_one
