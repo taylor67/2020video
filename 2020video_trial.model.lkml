@@ -7,7 +7,7 @@ explore: rental {
   from: rental
   label: "Rentals, Payments and Customers: Simple"
 
- join: repeat_rental_facts {
+  join: repeat_rental_facts {
   view_label: "Rental"
     type: left_outer
     relationship: one_to_one
@@ -86,6 +86,7 @@ explore: rental_detailed {
 }
 
 explore: inventory {
+
   join: rental {
     type: left_outer
     relationship: one_to_many
